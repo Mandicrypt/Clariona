@@ -1,0 +1,15 @@
+{
+  "name": "clariona-ondo-data",
+  "version": "1.0.0",
+  "description": "Fetches on-chain + price data for Ondo Finance RWA tokens (OUSG, USDY) for Clariona",
+  "type": "module",
+  "main": "fetch.js",
+  "scripts": {
+    "fetch": "node fetch.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.0",
+    "node-fetch": "^3.3.2"
+  }
+}
