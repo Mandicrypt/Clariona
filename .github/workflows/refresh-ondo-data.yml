@@ -1,1 +1,45 @@
+name: Refresh Ondo market data
+
+# Runs automatically every 1 hours, and can also be triggered manually
+# from the Actions tab in GitHub for an on-demand refresh.
+on:
+  schedule:
+    - cron: "0 */1 * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ondo-data
+        run: npm install
+
+      - name: Run the fetch script
+        working-directory: ondo-data
+        env:
+          RPC_URL: https://ethereum-rpc.publicnode.com
+          COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+        run: npm run fetch
+
+      - name: Copy fresh data to site root
+        run: cp ondo-data/ondo-data.json ./ondo-data.json
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "clariona-bot"
+          git config user.email "actions@github.com"
+          git add ondo-data.json
+          git diff --staged --quiet || git commit -m "Auto-refresh Ondo market data"
+          git push
 
