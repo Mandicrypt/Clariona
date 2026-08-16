@@ -30,7 +30,7 @@ jobs:
         run: npm run fetch
 
       - name: Copy fresh data to site root
-        run: cp stocks-data/stocks-data.json ./stocks-data.json
+        run: cp /stocks-data.json ./stocks-data.json
 
       - name: Commit and push if anything changed
         run: |
