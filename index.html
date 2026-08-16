@@ -221,8 +221,19 @@
     font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--sage);
     letter-spacing:0.02em;
   }
+  .market-subhead{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--sage);
+    letter-spacing:0.1em; text-transform:uppercase; margin:32px 0 14px;
+  }
+  .market-grid-3{ grid-template-columns:repeat(3,1fr); }
+  .market-change{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:600;
+  }
+  .market-change.up{ color:var(--signal); }
+  .market-change.down{ color:var(--rust); }
   @media (max-width:720px){
     .market-grid{ grid-template-columns:1fr; }
+    .market-grid-3{ grid-template-columns:1fr; }
   }
 
   /* MINT MODAL */
@@ -570,6 +581,35 @@
         <div class="market-supply">Total Supply: <span data-field="totalSupply">—</span></div>
       </div>
     </div>
+
+    <div class="market-subhead">Equities</div>
+    <div class="market-grid market-grid-3" id="stocks-grid">
+      <div class="market-card" data-stock="AAPL">
+        <div class="market-card-top">
+          <span class="market-symbol">AAPL</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+      <div class="market-card" data-stock="TSLA">
+        <div class="market-card-top">
+          <span class="market-symbol">TSLA</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+      <div class="market-card" data-stock="NVDA">
+        <div class="market-card-top">
+          <span class="market-symbol">NVDA</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+    </div>
+
     <p class="roadmap-note">Roadmap: scaling this feed onto X Layer's native <strong>Chainlink Data Streams</strong> — low-latency, on-chain-verified pricing for treasuries, equities, and commodities, purpose-built for RWA protocols on X Layer.</p>
   </div>
 </section>
@@ -730,10 +770,10 @@
 <footer>
   <span>Clariona · Build X AI Season</span>
   <div class="footer-social">
-    <a href="https://x.com/clarionahq" target="_blank" rel="noopener" aria-label="X (Twitter)">
+    <a href="https://x.com/YOUR_X_HANDLE" target="_blank" rel="noopener" aria-label="X (Twitter)">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22H16.6l-5.2-6.8L5.4 22H2.2l8.1-9.3L1.3 2h6.9l4.7 6.2L18.9 2zm-1.2 18h1.7L6.4 4H4.6l13.1 16z"/></svg>
     </a>
-    <a href="https://t.me/clarioinahq" target="_blank" rel="noopener" aria-label="Telegram">
+    <a href="https://t.me/YOUR_TG_HANDLE" target="_blank" rel="noopener" aria-label="Telegram">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 3.3 2.5 10.9c-1.3.5-1.3 1.2-.2 1.6l4.9 1.5 1.9 5.9c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.1-2 4.4 3.2c.8.5 1.4.2 1.6-.7l2.9-13.7c.3-1.2-.4-1.7-1-1.7zM8.5 14.2l9.5-6c.4-.3.8-.1.5.3l-8 7.6-.3 3.1-1.4-4.1z"/></svg>
     </a>
   </div>
@@ -743,6 +783,7 @@
 <script src="chain-discovery.js"></script>
 <script src="mint-flow.js"></script>
 <script src="ondo-loader.js"></script>
+<script src="stocks-loader.js"></script>
 <script src="recommend-console.js"></script>
 <script src="ledger-loader.js"></script>
 </body>
