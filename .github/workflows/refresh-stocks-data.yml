@@ -1,1 +1,41 @@
+name: Refresh stocks data
 
+on:
+  schedule:
+    - cron: "0 */1 * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: stocks-data
+        run: npm install
+
+      - name: Run the fetch script
+        working-directory: stocks-data
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+        run: npm run fetch
+
+      - name: Copy fresh data to site root
+        run: cp stocks-data/stocks-data.json ./stocks-data.json
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "clariona-bot"
+          git config user.email "actions@github.com"
+          git add stocks-data.json
+          git diff --staged --quiet || git commit -m "Auto-refresh stock quotes"
+          git push
