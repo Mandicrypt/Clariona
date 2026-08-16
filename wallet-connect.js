@@ -26,12 +26,18 @@ const NETWORKS = {
   },
 };
 
+// Exposed so other scripts (recommend-console.js, the ledger loader) can
+// build a read-only chain connection matching whichever network is
+// currently toggled, without needing a wallet connected at all.
+window.clarionaNetworks = NETWORKS;
+
 let currentNetwork = "mainnet"; // toggled via the nav's network switch
 
 window.clarionaWallet = {
   address: null,
   connected: false,
   provider: null, // the specific EIP-1193 provider the user picked
+  network: "mainnet", // kept in sync with the nav toggle — read by other scripts
 };
 
 // --- EIP-6963 discovery ---
@@ -148,19 +154,22 @@ function updateNetworkToggleUI() {
 async function setNetwork(network) {
   if (network === currentNetwork) return;
   currentNetwork = network;
+  window.clarionaWallet.network = network;
   updateNetworkToggleUI();
 
-  // If already connected, switch the wallet over right away and refresh
-  // anything that reads from the chain (e.g. "My Verified Assets").
+  // If already connected, switch the wallet over right away.
   if (window.clarionaWallet.connected && window.clarionaWallet.provider) {
     try {
       await ensureXLayer(window.clarionaWallet.provider);
-      window.dispatchEvent(new CustomEvent("clariona:networkChanged", { detail: { network } }));
     } catch (err) {
       console.error("Network switch failed:", err);
       alert("Couldn't switch networks in your wallet — see console for details.");
     }
   }
+
+  // Always notify — discovery (search, ledger) should refresh even for
+  // visitors who haven't connected a wallet at all.
+  window.dispatchEvent(new CustomEvent("clariona:networkChanged", { detail: { network } }));
 }
 
 // --- Wallet picker modal ---

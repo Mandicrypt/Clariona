@@ -1,52 +1,17 @@
 // Clariona frontend — recommendation console (client-side)
 //
-// This runs the ENTIRE recommendation engine directly in the browser —
-// no server needed. It used to call a local Node server at
-// localhost:3001, which only worked on your own computer. This version
-// works the same way for every visitor once the site is deployed.
+// Runs entirely in the browser. Assets now come from
+// window.clarionaFetchAllAssets() (see chain-discovery.js) — i.e. REAL
+// minted assets read live from the contract, not a fixed demo list. Any
+// asset anyone mints becomes searchable here for every visitor.
 
-const ASSETS = [
-  {
-    id: "lease-0231",
-    name: "Retail Lease #0231 — Singapore",
-    type: "Real Estate",
-    risk_score: 84,
-    risk_label: "Low",
-    yield_pct: 7.4,
-    maturity_days: 81,
-    status: "Verified",
-  },
-  {
-    id: "invoice-coffee-44",
-    name: "Export Invoice — Coffee Batch 44, Brazil",
-    type: "Trade Finance",
-    risk_score: 71,
-    risk_label: "Moderate",
-    yield_pct: 11.2,
-    maturity_days: 45,
-    status: "Verified",
-  },
-  {
-    id: "warehouse-rotterdam",
-    name: "Warehouse Note — Rotterdam",
-    type: "Real Estate",
-    risk_score: 88,
-    risk_label: "Low",
-    yield_pct: 6.1,
-    maturity_days: 62,
-    status: "Verified",
-  },
-  {
-    id: "receivable-118-dubai",
-    name: "Cross-Border Receivable #118 — Dubai",
-    type: "Trade Finance",
-    risk_score: 68,
-    risk_label: "Moderate",
-    yield_pct: 9.8,
-    maturity_days: 54,
-    status: "Verified",
-  },
-];
+let cachedAssets = null;
+
+async function getAssets(forceRefresh = false) {
+  if (cachedAssets && !forceRefresh) return cachedAssets;
+  cachedAssets = await window.clarionaFetchAllAssets();
+  return cachedAssets;
+}
 
 function parseQuery(query) {
   const q = query.toLowerCase();
@@ -124,7 +89,7 @@ function explainMatch(asset, filters, results, rank) {
   }
 
   if (reasons.length === 0) {
-    reasons.push(`one of the strongest overall risk/yield profiles in the current asset set`);
+    reasons.push(`one of the strongest overall risk/yield profiles among assets minted on Clariona so far`);
   }
 
   let sentence = reasons.join("; ");
@@ -141,19 +106,36 @@ function explainMatch(asset, filters, results, rank) {
   return sentence;
 }
 
-function runRecommendation(query) {
+async function runRecommendation(query) {
   const status = document.getElementById("recommend-status");
   const container = document.getElementById("recommend-results");
 
+  status.textContent = "Reading on-chain assets...";
+  container.innerHTML = "";
+
+  let assets;
+  try {
+    assets = await getAssets();
+  } catch (err) {
+    console.error("Could not read assets from chain:", err);
+    status.textContent = "Couldn't reach the network — see console for details.";
+    return;
+  }
+
+  if (assets.length === 0) {
+    status.textContent = "No assets have been minted on Clariona yet.";
+    container.innerHTML = `<p style="color:var(--sage); font-family:'IBM Plex Mono', monospace; font-size:12.5px;">Be the first — originate an asset to see it here.</p>`;
+    return;
+  }
+
   const filters = parseQuery(query);
-  const ranked = applyFilters(ASSETS, filters).sort((a, b) => b.yield_pct - a.yield_pct);
+  const ranked = applyFilters(assets, filters).sort((a, b) => b.yield_pct - a.yield_pct);
   const results = ranked.map((asset, i) => ({
     ...asset,
     reason: explainMatch(asset, filters, ranked, i),
   }));
 
-  status.textContent = "Parsed with local matcher.";
-  container.innerHTML = "";
+  status.textContent = `Parsed with local matcher · ${assets.length} asset${assets.length === 1 ? "" : "s"} on-chain.`;
 
   if (results.length === 0) {
     container.innerHTML = `<p style="color:var(--sage); font-family:'IBM Plex Mono', monospace; font-size:12.5px;">No matching assets found — try loosening your filters.</p>`;
@@ -178,6 +160,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (input.value.trim()) runRecommendation(input.value.trim());
+  });
+
+  // Refresh from chain when the network toggle changes.
+  window.addEventListener("clariona:networkChanged", () => {
+    cachedAssets = null;
+    if (input.value.trim()) runRecommendation(input.value.trim());
+  });
+
+  // Refresh immediately when any asset gets minted, so a fresh mint
+  // shows up in search results without needing a page reload.
+  window.addEventListener("clariona:assetMinted", () => {
+    cachedAssets = null;
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
 

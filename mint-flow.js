@@ -67,6 +67,7 @@ async function handleMintSubmit(e) {
 
     setStatus("Minted! Refreshing your assets...", "ok");
     await loadMyAssets();
+    window.dispatchEvent(new CustomEvent("clariona:assetMinted"));
     setTimeout(closeModal, 1200);
   } catch (err) {
     console.error("Mint failed:", err);
