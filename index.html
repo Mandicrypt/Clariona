@@ -433,6 +433,49 @@
     color:var(--gold); font-style:italic; font-size:12px; line-height:1.6;
   }
 
+  /* ROADMAP */
+  .roadmap-wrap{ position:relative; padding:20px 0; }
+  .roadmap-svg{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    z-index:0; overflow:visible;
+  }
+  .roadmap-svg path{
+    fill:none; stroke:var(--gold); stroke-width:2.5; opacity:0.4;
+    stroke-linecap:round; stroke-dasharray:2 10;
+  }
+  .roadmap-grid{
+    position:relative; z-index:1; display:grid;
+    grid-template-columns:repeat(3,1fr); gap:48px 0;
+  }
+  .roadmap-row-reverse{ direction:rtl; }
+  .roadmap-row-reverse .roadmap-step{ direction:ltr; }
+  .roadmap-step{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 20px; }
+  .roadmap-num{
+    width:56px; height:56px; border-radius:50%; background:var(--ink-2);
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:16px; font-weight:600; color:var(--gold);
+    margin-bottom:16px; flex-shrink:0;
+  }
+  .roadmap-step h4{
+    font-family:'Fraunces', serif; font-weight:600; font-size:16px; margin-bottom:8px;
+  }
+  .roadmap-step p{ font-family:'IBM Plex Sans', sans-serif; font-size:13px; color:var(--sage); line-height:1.55; }
+  @media (max-width:860px){
+    .roadmap-svg{ display:none; }
+    .roadmap-grid{ grid-template-columns:1fr; gap:0; }
+    .roadmap-row-reverse{ direction:ltr; }
+    .roadmap-step{
+      flex-direction:row; text-align:left; align-items:flex-start;
+      padding:0 0 32px; position:relative;
+    }
+    .roadmap-step:not(:last-child)::after{
+      content:""; position:absolute; left:27px; top:56px; bottom:0;
+      width:2px; background:repeating-linear-gradient(to bottom, var(--gold) 0 6px, transparent 6px 12px);
+      opacity:0.4;
+    }
+    .roadmap-num{ margin-bottom:0; margin-right:18px; }
+  }
+
   /* FAQ */
   .faq{ display:flex; flex-direction:column; gap:1px; background:var(--line);
     border:1px solid var(--line); border-radius:6px; overflow:hidden; }
@@ -774,6 +817,55 @@
       </div>
       <div id="ledger-body">
         <p style="padding:20px 24px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--sage);">Loading on-chain ledger...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">Roadmap</div>
+      <h2>What's next.</h2>
+      <p>What's built today is real. Here's what's still ahead.</p>
+    </div>
+    <div class="roadmap-wrap">
+      <svg class="roadmap-svg" viewBox="0 0 900 240" preserveAspectRatio="none">
+        <path d="M150,60 H750 Q830,60 830,120 Q830,180 750,180 H150" />
+      </svg>
+      <div class="roadmap-grid">
+        <div class="roadmap-step">
+          <div class="roadmap-num">01</div>
+          <h4>Real Document Verification</h4>
+          <p>Actual OCR + AI parsing of uploaded documents, not manual entry.</p>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-num">02</div>
+          <h4>A Real Marketplace</h4>
+          <p>Listing, escrow, and settlement — so "buy" actually does something.</p>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-num">03</div>
+          <h4>Asset Detail Pages</h4>
+          <p>A full page per instrument — documents, history, verification trail.</p>
+        </div>
+      </div>
+      <div class="roadmap-grid roadmap-row-reverse">
+        <div class="roadmap-step">
+          <div class="roadmap-num">04</div>
+          <h4>Verification Badges</h4>
+          <p>Distinguish Clariona-reviewed assets from self-submitted ones.</p>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-num">05</div>
+          <h4>Portfolio Dashboard</h4>
+          <p>Total value, yield earned, and maturity alerts in one place.</p>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-num">06</div>
+          <h4>Historical Charts</h4>
+          <p>Price and yield history over time, not just a current snapshot.</p>
+        </div>
       </div>
     </div>
   </div>
