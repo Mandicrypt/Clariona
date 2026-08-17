@@ -7,8 +7,6 @@
 // SETUP: requires ethers.js (loaded via CDN below), and wallet-connect.js
 // to run first so window.clarionaWallet exists.
 
-const CONTRACT_ADDRESS = "0x433C4d2838EECCd0b8Ec47c0853884e771c03Cb1";
-
 const CONTRACT_ABI = [
   "function mintVerifiedAsset(address to, string name, string assetType, uint16 riskScore, uint16 yieldBps, uint32 maturityDays) external returns (uint256)",
   "function getAsset(uint256 tokenId) view returns (string name, string assetType, uint16 riskScore, uint16 yieldBps, uint32 maturityDays, address owner)",
@@ -16,7 +14,9 @@ const CONTRACT_ABI = [
 ];
 
 function getContract(signerOrProvider) {
-  return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signerOrProvider);
+  const network = window.clarionaWallet?.network || "mainnet";
+  const address = window.clarionaNetworks[network].contractAddress;
+  return new ethers.Contract(address, CONTRACT_ABI, signerOrProvider);
 }
 
 function openModal() {
@@ -71,13 +71,7 @@ async function handleMintSubmit(e) {
     setTimeout(closeModal, 1200);
   } catch (err) {
     console.error("Mint failed:", err);
-    // onlyOwner will revert if the connected wallet isn't the contract owner —
-    // in this demo, only the deployer wallet can successfully mint.
-    if (String(err.message || "").includes("OwnableUnauthorizedAccount")) {
-      setStatus("Only the verifier wallet can mint (demo restriction).", "error");
-    } else {
-      setStatus("Mint failed — see console for details.", "error");
-    }
+    setStatus("Mint failed — see console for details.", "error");
   }
 }
 

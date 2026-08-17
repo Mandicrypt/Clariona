@@ -6,8 +6,6 @@
 // console and the Live Ledger. Works even for visitors with no wallet
 // installed at all, since it uses a plain read-only RPC connection.
 
-const DISCOVERY_CONTRACT_ADDRESS = "0x433C4d2838EECCd0b8Ec47c0853884e771c03Cb1";
-
 const DISCOVERY_CONTRACT_ABI = [
   "function getAsset(uint256 tokenId) view returns (string name, string assetType, uint16 riskScore, uint16 yieldBps, uint32 maturityDays, address owner)",
   "function totalMinted() view returns (uint256)",
@@ -15,9 +13,9 @@ const DISCOVERY_CONTRACT_ABI = [
 
 async function fetchAllOnChainAssets() {
   const network = window.clarionaWallet?.network || "mainnet";
-  const rpcUrl = window.clarionaNetworks[network].rpcUrls[0];
-  const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const contract = new ethers.Contract(DISCOVERY_CONTRACT_ADDRESS, DISCOVERY_CONTRACT_ABI, provider);
+  const config = window.clarionaNetworks[network];
+  const provider = new ethers.JsonRpcProvider(config.rpcUrls[0]);
+  const contract = new ethers.Contract(config.contractAddress, DISCOVERY_CONTRACT_ABI, provider);
 
   const total = Number(await contract.totalMinted());
   const assets = [];

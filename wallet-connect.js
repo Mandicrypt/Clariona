@@ -16,6 +16,7 @@ const NETWORKS = {
     nativeCurrency: { name: "OKB", symbol: "OKB", decimals: 18 },
     rpcUrls: ["https://rpc.xlayer.tech"],
     blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer"],
+    contractAddress: "0xC19105eb061517D663075a3E040925BdD27B46c8",
   },
   testnet: {
     chainId: "0x7A0", // 1952
@@ -23,6 +24,7 @@ const NETWORKS = {
     nativeCurrency: { name: "OKB", symbol: "OKB", decimals: 18 },
     rpcUrls: ["https://testrpc.xlayer.tech/terigon"],
     blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer-test"],
+    contractAddress: "0xD1f0C370bDB616B8E5536294CCF6E081887B79A0",
   },
 };
 
