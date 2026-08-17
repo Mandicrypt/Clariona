@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="image/logo.png">
+<script>
+  // Runs before first paint so there's no flash of the wrong theme.
+  (function(){
+    var saved = localStorage.getItem("clariona-theme");
+    if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+  })();
+</script>
 <title>Clariona — Intelligence for Real World Assets</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
@@ -19,6 +26,32 @@
     --rust: #C0604A;
     --line: rgba(237,230,214,0.12);
   }
+
+  :root[data-theme="light"]{
+    --ink: #F7F4EC;
+    --ink-2: #FFFFFF;
+    --paper: #14171F;
+    --paper-dim: #3A3F4B;
+    --gold: #A87A2E;
+    --signal: #1B8F73;
+    --sage: #5B6473;
+    --rust: #A6402C;
+    --line: rgba(20,23,31,0.12);
+  }
+
+  body{ transition: background-color 0.2s ease, color 0.2s ease; }
+
+  .theme-toggle{
+    width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
+    background:transparent; color:var(--sage); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:color 0.15s ease, border-color 0.15s ease;
+  }
+  .theme-toggle:hover{ color:var(--gold); border-color:var(--gold); }
+  .theme-toggle svg{ width:16px; height:16px; }
+  .theme-toggle .icon-moon{ display:none; }
+  :root[data-theme="light"] .theme-toggle .icon-sun{ display:none; }
+  :root[data-theme="light"] .theme-toggle .icon-moon{ display:block; }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
   html{ scroll-behavior:smooth; }
@@ -403,13 +436,23 @@
   /* FAQ */
   .faq{ display:flex; flex-direction:column; gap:1px; background:var(--line);
     border:1px solid var(--line); border-radius:6px; overflow:hidden; }
-  .faq-item{ background:var(--ink); padding:26px 28px; }
+  .faq-item{ background:var(--ink); }
+  .faq-item summary{
+    padding:22px 28px; cursor:pointer; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; gap:14px;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
   .faq-q{
     font-family:'Fraunces', serif; font-weight:600; font-size:17px;
-    display:flex; gap:14px; align-items:baseline; margin-bottom:10px;
+    display:flex; gap:14px; align-items:baseline;
   }
   .faq-q .qmark{ font-family:'IBM Plex Mono', monospace; color:var(--gold); font-size:14px; flex-shrink:0; }
-  .faq-a{ color:var(--sage); font-size:14.5px; line-height:1.65; padding-left:28px; }
+  .faq-toggle{
+    font-family:'IBM Plex Mono', monospace; color:var(--sage); font-size:18px;
+    flex-shrink:0; transition:transform 0.2s ease;
+  }
+  .faq-item[open] .faq-toggle{ transform:rotate(45deg); }
+  .faq-a{ color:var(--sage); font-size:14.5px; line-height:1.65; padding:0 28px 24px 28px; }
   .faq-a strong{ color:var(--paper); font-weight:600; }
 
   /* FOOTER CTA */
@@ -446,6 +489,13 @@
     .console-input{ flex-wrap:wrap; }
     .console-input input{ min-width:0; flex-basis:100%; order:1; }
     .console-go{ order:2; }
+    .scan-device{ padding:16px; }
+    .scan-device-header{
+      flex-wrap:wrap; gap:6px 10px; font-size:9px;
+    }
+    .doc{ padding:18px 16px; min-height:180px; }
+    .stamp{ font-size:11px; padding:5px 10px; }
+    .terminal{ padding:12px 14px; font-size:10.5px; min-height:100px; }
   }
 
   .footer-social{ display:flex; align-items:center; gap:16px; }
@@ -487,6 +537,10 @@
     <img src="image/logo.png" alt="Clariona logo" class="brand-logo" />
     Clariona</div>
   <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
     <div class="network-toggle" id="network-toggle">
       <button class="net-option active" data-network="mainnet"><span class="dot"></span> Mainnet</button>
       <button class="net-option" data-network="testnet"><span class="dot"></span> Testnet</button>
@@ -733,30 +787,30 @@
 
     </div>
     <div class="faq">
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>Does the token mean I legally own the land?</div>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Does the token mean I legally own the land?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">No. A real company (an SPV) holds the actual legal title, the normal way, through the county. The token is a <strong>share in that company</strong>. Owning the token means owning a piece of what the company owns.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>So what does the blockchain actually do?</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>So what does the blockchain actually do?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">It makes <strong>buying and selling your share</strong> fast, easy, and visible to everyone — instead of slow paperwork, it's one transaction. The legal title itself never moves on-chain.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>What does the AI actually verify?</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>What does the AI actually verify?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">It reads the submitted documents — lease, invoice, title, deed — and checks that the details <strong>match and make sense</strong> (dates, amounts, parties). It then gives a risk score with its reasoning, instead of a black-box number.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>Is this legally binding right now?</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Is this legally binding right now?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">This is a <strong>hackathon demo</strong>. The flow and structure are real and modeled on how live RWA projects work, but no SPV, license, or legal entity exists yet behind this build.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>Why X Layer?</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Why X Layer?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">Low fees and fast settlement, which matters when assets are traded in small shares rather than one expensive lump sum.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="qmark">Q.</span>Does this only work for one country?</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Does this only work for one country?</span><span class="faq-toggle">+</span></summary>
         <div class="faq-a">No. The verification and SPV structure is <strong>designed to repeat in any market</strong> — the AI checks documents, not geography.</div>
-      </div>
+      </details>
     </div>
   </div>
 </section>
@@ -778,6 +832,7 @@
     </a>
   </div>
 </footer>
+<script src="theme-toggle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
 <script src="wallet-connect.js"></script>
 <script src="chain-discovery.js"></script>
