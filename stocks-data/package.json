@@ -1,0 +1,14 @@
+{
+  "name": "clariona-stocks-data",
+  "version": "1.0.0",
+  "description": "Fetches live equity quotes (AAPL, TSLA, NVDA) via Finnhub's free API for Clariona",
+  "type": "module",
+  "main": "fetch-stocks.js",
+  "scripts": {
+    "fetch": "node fetch-stocks.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  }
+}
