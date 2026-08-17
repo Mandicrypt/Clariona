@@ -607,52 +607,35 @@
 <body>
 
 <nav>
-  <div class="brand">
+  <a href="index.html" class="brand" style="text-decoration:none; color:inherit;">
     <img src="image/logo.png" alt="Clariona logo" class="brand-logo" />
-    Clariona</div>
+    Clariona</a>
   <div class="nav-right">
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
-    <a href="app.html" class="btn-primary" style="text-decoration:none; padding:9px 16px; font-size:12px;">Launch App →</a>
+    <div class="network-toggle" id="network-toggle">
+      <button class="net-option active" data-network="mainnet"><span class="dot"></span> Mainnet</button>
+      <button class="net-option" data-network="testnet"><span class="dot"></span> Testnet</button>
+    </div>
+    <button class="nav-cta" id="connect-wallet-btn">Connect Wallet</button>
+    <button class="disconnect-btn" id="disconnect-wallet-btn">Disconnect</button>
   </div>
 </nav>
 
-<div class="hero">
-  <div>
-    <div class="eyebrow">Intelligence for Real World Assets</div>
-    <h1>Know what a real-world asset is <em>actually</em> worth.</h1>
-    <p class="sub">Clariona reads live on-chain RWA markets, scores risk and yield, and finds the exposure that matches what you're asking for — in plain English. Have an asset of your own? Clariona verifies it and mints it too.</p>
+<div class="app-header">
+  <div class="wrap">
+    <div class="eyebrow">The App</div>
+    <h2>Ask for what you want. Or list what you have.</h2>
     <div class="hero-actions">
-      <a href="app.html" class="btn-primary" style="text-decoration:none;">Launch App →</a>
-      <a href="#how-it-works" class="btn-ghost" style="text-decoration:none;">See how it works ↓</a>
-    </div>
-  </div>
-
-  <div class="scan-device">
-    <div class="scan-device-header"><span>INPUT · LEASE_AGREEMENT.PDF</span><span>AI VERIFICATION</span></div>
-    <div class="doc">
-      <div class="doc-title">Commercial Lease Agreement</div>
-      <div class="doc-line w95"></div>
-      <div class="doc-line w80"></div>
-      <div class="doc-line w60"></div>
-      <div class="doc-line w70"></div>
-      <div class="doc-line w40"></div>
-      <div class="doc-line w80"></div>
-      <div class="scan-line"></div>
-      <div class="stamp">Verified</div>
-    </div>
-    <div class="terminal">
-      <div class="t-line a1"><span class="t-prompt">&gt; </span>parsing document structure...</div>
-      <div class="t-line a2"><span class="t-prompt">&gt; </span>cross-checking payment schedule <span class="ok">[consistent]</span></div>
-      <div class="t-line a3"><span class="t-prompt">&gt; </span>risk score: <span class="warn">82/100</span></div>
-      <div class="t-line a4"><span class="t-prompt">&gt; </span>minting instrument on X Layer <span class="ok">[done]</span></div>
+      <button class="btn-primary" id="ask-clariona-btn">Ask Clariona →</button>
+      <button class="btn-ghost" id="analyze-asset-btn">Originate an Asset →</button>
     </div>
   </div>
 </div>
 
-<section id="how-it-works">
+<section>
   <div class="wrap">
     <div class="section-head">
       <div class="section-eyebrow">How it works</div>
@@ -679,10 +662,263 @@
   </div>
 </section>
 
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">Live Market Data</div>
+      <h2>Real yield, pulled on-chain.</h2>
+      <p>Live price and supply data for tokenized treasury instruments, read directly from their contracts.</p>
+    </div>
+    <div class="market-grid">
+      <div class="market-card" data-asset="OUSG">
+        <div class="market-card-top">
+          <span class="market-symbol">OUSG</span>
+          <span class="market-price">$<span data-field="priceUsd">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-supply">Total Supply: <span data-field="totalSupply">—</span></div>
+      </div>
+      <div class="market-card" data-asset="USDY">
+        <div class="market-card-top">
+          <span class="market-symbol">USDY</span>
+          <span class="market-price">$<span data-field="priceUsd">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-supply">Total Supply: <span data-field="totalSupply">—</span></div>
+      </div>
+    </div>
+
+    <div class="market-subhead">Equities</div>
+    <div class="market-grid market-grid-3" id="stocks-grid">
+      <div class="market-card" data-stock="AAPL">
+        <div class="market-card-top">
+          <span class="market-symbol">AAPL</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+      <div class="market-card" data-stock="TSLA">
+        <div class="market-card-top">
+          <span class="market-symbol">TSLA</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+      <div class="market-card" data-stock="NVDA">
+        <div class="market-card-top">
+          <span class="market-symbol">NVDA</span>
+          <span class="market-price">$<span data-field="price">—</span></span>
+        </div>
+        <h3 data-field="name">—</h3>
+        <div class="market-change" data-field="changePct">—</div>
+      </div>
+    </div>
+
+    <p class="roadmap-note">Roadmap: scaling this feed onto X Layer's native <strong>Chainlink Data Streams</strong> — low-latency, on-chain-verified pricing for treasuries, equities, and commodities, purpose-built for RWA protocols on X Layer.</p>
+  </div>
+</section>
+
+<section id="ask-console-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">Ask, don't search</div>
+      <h2>Tell it what you want exposure to.</h2>
+      <p>Clariona finds the assets matching your intent, scored and ranked by risk, yield, and maturity.</p>
+    </div>
+    <div class="console-wrap">
+      <form id="recommend-form" class="console-input">
+        <span class="caret">›</span>
+        <input
+          id="recommend-query"
+          type="text"
+          value="Find low-risk assets under 90-day maturity yielding above 6%"
+          autocomplete="off"
+        />
+        <button type="submit" class="console-go">Ask →</button>
+      </form>
+      <div id="recommend-status" class="console-status"></div>
+      <div id="recommend-results" class="console-results"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Wallet picker modal -->
+<div class="modal-overlay" id="wallet-picker-modal">
+  <div class="modal-card">
+    <h3>Connect a wallet</h3>
+    <p class="modal-sub">Choose which wallet you'd like to use with Clariona.</p>
+    <div class="wallet-picker-list" id="wallet-picker-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-close" id="wallet-picker-close">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mint modal -->
+<div class="modal-overlay" id="mint-modal">
+  <div class="modal-card">
+    <h3>Submit an asset</h3>
+    <p class="modal-sub">Attach your document, then confirm its details below. Automatic AI extraction is coming soon — for now, enter the terms yourself.</p>
+    <form id="mint-form">
+      <div class="modal-field">
+        <label>Supporting document</label>
+        <input type="file" id="mint-document" accept=".pdf,.png,.jpg,.jpeg" />
+      </div>
+      <div class="modal-field">
+        <label>Asset name</label>
+        <input type="text" id="mint-name" placeholder="e.g. Retail Lease #0231 — Singapore" required />
+      </div>
+      <div class="modal-field">
+        <label>Asset type</label>
+        <select id="mint-type">
+          <option>Real Estate</option>
+          <option>Trade Finance</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Risk score (0–100)</label>
+          <input type="number" id="mint-risk" min="0" max="100" value="80" required />
+        </div>
+        <div class="modal-field">
+          <label>Yield (%)</label>
+          <input type="number" id="mint-yield" step="0.01" value="7.5" required />
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Maturity (days)</label>
+        <input type="number" id="mint-maturity" min="1" value="60" required />
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">Mint Instrument →</button>
+        <button type="button" class="modal-close" id="mint-modal-close">Cancel</button>
+      </div>
+      <div class="modal-status" id="mint-status"></div>
+    </form>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">On-Chain Registry</div>
+      <h2>My Verified Assets</h2>
+      <p>Instruments minted to your connected wallet, read live from the contract.</p>
+    </div>
+    <div class="my-assets-grid" id="my-assets-grid">
+      <p style="font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--sage);">Connect your wallet to see your assets.</p>
+    </div>
+  </div>
+</section>
+
+<section id="live-ledger-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">Live Ledger</div>
+      <h2>Every verification, public.</h2>
+      <p>Nothing is minted quietly. The full history of what Clariona has scored is on-chain and browsable.</p>
+    </div>
+    <div class="ledger">
+      <div class="ledger-row head">
+        <span>Asset</span><span>Type</span><span>Risk</span><span>Yield</span><span>Status</span>
+      </div>
+      <div id="ledger-body">
+        <p style="padding:20px 24px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--sage);">Loading on-chain ledger...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">Roadmap</div>
+      <h2>What's next.</h2>
+      <p>What's built today is real. Here's what's still ahead.</p>
+    </div>
+    <div class="roadmap-grid">
+      <div class="roadmap-hline" style="grid-column:1/3; grid-row:1;"></div>
+      <div class="roadmap-hline" style="grid-column:2/4; grid-row:1;"></div>
+      <div class="roadmap-vline" style="grid-column:3; grid-row:2;"></div>
+      <div class="roadmap-hline" style="grid-column:2/4; grid-row:3;"></div>
+      <div class="roadmap-hline" style="grid-column:1/3; grid-row:3;"></div>
+
+      <div class="roadmap-step" style="grid-column:1; grid-row:1;">
+        <div class="roadmap-num">01</div>
+        <h4>Real Document Verification</h4>
+        <p>Actual OCR + AI parsing of uploaded documents, not manual entry.</p>
+      </div>
+      <div class="roadmap-step" style="grid-column:2; grid-row:1;">
+        <div class="roadmap-num">02</div>
+        <h4>A Real Marketplace</h4>
+        <p>Listing, escrow, and settlement — so "buy" actually does something.</p>
+      </div>
+      <div class="roadmap-step" style="grid-column:3; grid-row:1;">
+        <div class="roadmap-num">03</div>
+        <h4>Asset Detail Pages</h4>
+        <p>A full page per instrument — documents, history, verification trail.</p>
+      </div>
+      <div class="roadmap-step" style="grid-column:3; grid-row:3;">
+        <div class="roadmap-num">04</div>
+        <h4>Verification Badges</h4>
+        <p>Distinguish Clariona-reviewed assets from self-submitted ones.</p>
+      </div>
+      <div class="roadmap-step" style="grid-column:2; grid-row:3;">
+        <div class="roadmap-num">05</div>
+        <h4>Portfolio Dashboard</h4>
+        <p>Total value, yield earned, and maturity alerts in one place.</p>
+      </div>
+      <div class="roadmap-step" style="grid-column:1; grid-row:3;">
+        <div class="roadmap-num">06</div>
+        <h4>Historical Charts</h4>
+        <p>Price and yield history over time, not just a current snapshot.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">FAQ</div>
+      <h2>The questions people ask first.</h2>
+
+    </div>
+    <div class="faq">
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Does the token mean I legally own the land?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">No. A real company (an SPV) holds the actual legal title, the normal way, through the county. The token is a <strong>share in that company</strong>. Owning the token means owning a piece of what the company owns.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>So what does the blockchain actually do?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">It makes <strong>buying and selling your share</strong> fast, easy, and visible to everyone — instead of slow paperwork, it's one transaction. The legal title itself never moves on-chain.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>What does the AI actually verify?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">It reads the submitted documents — lease, invoice, title, deed — and checks that the details <strong>match and make sense</strong> (dates, amounts, parties). It then gives a risk score with its reasoning, instead of a black-box number.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Is this legally binding right now?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">This is a <strong>hackathon demo</strong>. The flow and structure are real and modeled on how live RWA projects work, but no SPV, license, or legal entity exists yet behind this build.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Why X Layer?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">Low fees and fast settlement, which matters when assets are traded in small shares rather than one expensive lump sum.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="faq-q"><span class="qmark">Q.</span>Does this only work for one country?</span><span class="faq-toggle">+</span></summary>
+        <div class="faq-a">No. The verification and SPV structure is <strong>designed to repeat in any market</strong> — the AI checks documents, not geography.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
 <div class="cta-band">
-  <h2>See it in action.</h2>
-  <p>Live market data, AI-scored recommendations, and on-chain origination — all working, right now.</p>
-  <a href="app.html" class="btn-primary" style="text-decoration:none;">Launch App →</a>
+  <h2>Have a real-world asset of your own?</h2>
+  <p>Verify it and mint it on X Layer — takes a minute.</p>
+  <button class="btn-primary" id="cta-originate-btn">Originate an Asset →</button>
 </div>
 
 <footer>
@@ -696,7 +932,14 @@
     </a>
   </div>
 </footer>
-
 <script src="theme-toggle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+<script src="wallet-connect.js"></script>
+<script src="chain-discovery.js"></script>
+<script src="mint-flow.js"></script>
+<script src="ondo-loader.js"></script>
+<script src="stocks-loader.js"></script>
+<script src="recommend-console.js"></script>
+<script src="ledger-loader.js"></script>
 </body>
 </html>

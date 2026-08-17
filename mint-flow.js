@@ -121,6 +121,7 @@ async function loadMyAssets() {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("analyze-asset-btn")?.addEventListener("click", openModal);
+  document.getElementById("cta-originate-btn")?.addEventListener("click", openModal);
   document.getElementById("mint-modal-close")?.addEventListener("click", closeModal);
   document.getElementById("mint-form")?.addEventListener("submit", handleMintSubmit);
 
