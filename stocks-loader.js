@@ -9,6 +9,11 @@ async function loadStocksData() {
     if (!res.ok) throw new Error(`Failed to load stocks-data.json (${res.status})`);
     const data = await res.json();
 
+    // Expose globally so trade.js (Buy/Sell modal) and the AI recommendation
+    // console can read live prices without a second fetch.
+    window.clarionaStocksData = data;
+    window.dispatchEvent(new CustomEvent("clariona:stocksLoaded"));
+
     data.assets.forEach((asset) => {
       const card = document.querySelector(`[data-stock="${asset.symbol}"]`);
       if (!card) return;

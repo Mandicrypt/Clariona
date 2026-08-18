@@ -50,6 +50,47 @@ function parseQuery(query) {
   return filters;
 }
 
+// Tradeable tokenized stocks are a separate universe from minted RWAs —
+// they aren't scored by risk/yield/maturity, so they're matched by
+// keyword/ticker/company-name instead and rendered as their own cards.
+function parseStockMatches(query) {
+  const q = query.toLowerCase();
+  const meta = window.clarionaStockMeta || {};
+  const nameHints = { AAPL: ["apple", "aapl"], TSLA: ["tesla", "tsla"], NVDA: ["nvidia", "nvda"] };
+
+  const hit = Object.keys(meta).filter((symbol) =>
+    (nameHints[symbol] || []).some((hint) => q.includes(hint))
+  );
+  if (hit.length > 0) return hit;
+
+  if (/\b(stock|stocks|equity|equities|shares?)\b/.test(q)) {
+    return Object.keys(meta);
+  }
+  return [];
+}
+
+function renderStockResults(container, symbols) {
+  const stocksData = window.clarionaStocksData;
+  const meta = window.clarionaStockMeta || {};
+
+  symbols.forEach((symbol) => {
+    const asset = stocksData ? stocksData.assets.find((a) => a.symbol === symbol) : null;
+    const m = meta[symbol];
+    if (!m) return;
+
+    const card = document.createElement("div");
+    card.className = "result-card stock-result-card";
+    card.setAttribute("data-stock", symbol);
+    card.innerHTML = `
+      <span class="rc-badge">Tradeable Stock · OKX</span>
+      <div class="rc-top"><h4>${m.name}</h4><span class="rc-yield">$${asset ? asset.price.toFixed(2) : "—"}</span></div>
+      <p>${m.xTicker} · tokenized equity, price-linked to ${symbol}</p>
+      <p class="rc-reason">Not a minted Clariona asset — trades on OKX. Click to buy or sell.</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
 function applyFilters(assets, f) {
   return assets.filter((a) => {
     if (f.minRiskScore !== undefined && a.risk_score < f.minRiskScore) return false;
@@ -135,9 +176,11 @@ async function runRecommendation(query) {
     reason: explainMatch(asset, filters, ranked, i),
   }));
 
+  const stockMatches = parseStockMatches(query);
+
   status.textContent = `Parsed with local matcher · ${assets.length} asset${assets.length === 1 ? "" : "s"} on-chain.`;
 
-  if (results.length === 0) {
+  if (results.length === 0 && stockMatches.length === 0) {
     container.innerHTML = `<p style="color:var(--sage); font-family:'IBM Plex Mono', monospace; font-size:12.5px;">No matching assets found — try loosening your filters.</p>`;
     return;
   }
@@ -152,6 +195,8 @@ async function runRecommendation(query) {
     `;
     container.appendChild(card);
   });
+
+  renderStockResults(container, stockMatches);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -173,6 +218,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // shows up in search results without needing a page reload.
   window.addEventListener("clariona:assetMinted", () => {
     cachedAssets = null;
+    if (input.value.trim()) runRecommendation(input.value.trim());
+  });
+
+  // Stock prices load async (separate fetch) — re-run once available so
+  // tradeable-stock cards pick up a real price instead of showing "—".
+  window.addEventListener("clariona:stocksLoaded", () => {
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
 

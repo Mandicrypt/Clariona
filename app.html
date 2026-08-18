@@ -286,6 +286,12 @@
   }
   .market-change.up{ color:var(--signal); }
   .market-change.down{ color:var(--rust); }
+  .market-card[data-stock]{ cursor:pointer; transition:border-color 0.15s ease; }
+  .market-card[data-stock]:hover{ border-color:var(--gold); }
+  .market-card-hint{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--sage);
+    letter-spacing:0.05em; text-transform:uppercase; margin-top:10px;
+  }
   @media (max-width:720px){
     .market-grid{ grid-template-columns:1fr; }
     .market-grid-3{ grid-template-columns:1fr; }
@@ -344,6 +350,28 @@
     border-radius:4px; padding:10px 16px; cursor:pointer;
     font-family:'IBM Plex Sans', sans-serif; font-size:13.5px;
   }
+
+  /* TRADE MODAL */
+  .trade-price-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    background:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:16px 18px; margin-bottom:18px;
+  }
+  .trade-price-row .trade-symbol{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--gold);
+    letter-spacing:0.08em; text-transform:uppercase;
+  }
+  .trade-price-row .trade-price{
+    font-family:'IBM Plex Mono', monospace; font-size:20px; color:var(--signal);
+    font-weight:600;
+  }
+  .btn-buy, .btn-sell{
+    flex:1; border-radius:4px; padding:12px 16px; cursor:pointer;
+    font-family:'IBM Plex Sans', sans-serif; font-size:14px; font-weight:600;
+    border:none;
+  }
+  .btn-buy{ background:var(--signal); color:var(--ink); }
+  .btn-sell{ background:transparent; border:1px solid var(--rust); color:var(--rust); }
 
   /* WALLET PICKER */
   .wallet-picker-list{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
@@ -450,6 +478,13 @@
   .result-card h4{ font-family:'Fraunces', serif; font-size:15px; font-weight:600; }
   .result-card .rc-yield{ font-family:'IBM Plex Mono', monospace; color:var(--signal); font-size:13px; }
   .result-card p{ color:var(--sage); font-size:12.5px; line-height:1.5; }
+  .stock-result-card{ cursor:pointer; transition:border-color 0.15s ease; }
+  .stock-result-card:hover{ border-color:var(--gold); }
+  .rc-badge{
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--gold); border:1px solid rgba(184,146,63,0.35);
+    border-radius:3px; padding:2px 7px; display:inline-block; margin-bottom:8px;
+  }
   .result-card .rc-reason{
     margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);
     color:var(--gold); font-style:italic; font-size:12px; line-height:1.6;
@@ -697,6 +732,7 @@
         </div>
         <h3 data-field="name">—</h3>
         <div class="market-change" data-field="changePct">—</div>
+        <div class="market-card-hint">Click to Buy / Sell →</div>
       </div>
       <div class="market-card" data-stock="TSLA">
         <div class="market-card-top">
@@ -705,6 +741,7 @@
         </div>
         <h3 data-field="name">—</h3>
         <div class="market-change" data-field="changePct">—</div>
+        <div class="market-card-hint">Click to Buy / Sell →</div>
       </div>
       <div class="market-card" data-stock="NVDA">
         <div class="market-card-top">
@@ -713,8 +750,10 @@
         </div>
         <h3 data-field="name">—</h3>
         <div class="market-change" data-field="changePct">—</div>
+        <div class="market-card-hint">Click to Buy / Sell →</div>
       </div>
     </div>
+    <p class="roadmap-note" style="margin-top:14px;">Equities are tradeable now — click any card to buy or sell the tokenized stock (e.g. XAAPL) on OKX.</p>
 
     <p class="roadmap-note">Roadmap: scaling this feed onto X Layer's native <strong>Chainlink Data Streams</strong> — low-latency, on-chain-verified pricing for treasuries, equities, and commodities, purpose-built for RWA protocols on X Layer.</p>
   </div>
@@ -797,6 +836,28 @@
       </div>
       <div class="modal-status" id="mint-status"></div>
     </form>
+  </div>
+</div>
+
+<!-- Trade (Buy/Sell) modal -->
+<div class="modal-overlay" id="trade-modal">
+  <div class="modal-card">
+    <h3 id="trade-modal-title">Trade</h3>
+    <p class="modal-sub" id="trade-modal-sub">Tokenized equity, price-linked to the underlying share.</p>
+    <div class="trade-price-row">
+      <span class="trade-symbol" id="trade-modal-symbol">—</span>
+      <span class="trade-price">$<span id="trade-modal-price">—</span></span>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-buy" id="trade-buy-btn">Buy →</button>
+      <button type="button" class="btn-sell" id="trade-sell-btn">Sell →</button>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="modal-close" id="trade-modal-close">Close</button>
+    </div>
+    <p class="modal-sub" style="margin-top:16px; margin-bottom:0; font-size:11.5px;">
+      Buy/Sell opens OKX's tokenized-stock market in a new tab — trades execute on OKX, not on Clariona. Tokenized stocks provide price exposure only and do not confer ownership or shareholder rights.
+    </p>
   </div>
 </div>
 
@@ -939,6 +1000,7 @@
 <script src="mint-flow.js"></script>
 <script src="ondo-loader.js"></script>
 <script src="stocks-loader.js"></script>
+<script src="trade.js"></script>
 <script src="recommend-console.js"></script>
 <script src="ledger-loader.js"></script>
 </body>
