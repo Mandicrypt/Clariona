@@ -25,6 +25,9 @@
     --sage: #7E8CA6;
     --rust: #C0604A;
     --line: rgba(237,230,214,0.12);
+    --console-bg:#0A100D;
+    --console-text:#E8E4DC;
+
   }
 
   :root[data-theme="light"]{
@@ -37,6 +40,9 @@
     --sage: #5B6473;
     --rust: #A6402C;
     --line: rgba(20,23,31,0.12);
+    --console-bg:#0A100D;
+    --console-text:#E8E4DC;
+
   }
 
   /* Fixed colors for the hero scanner mockup — this always looks like a
@@ -450,7 +456,7 @@
     background:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:28px;
   }
   .console-input{
-    display:flex; align-items:center; gap:12px; background:#0A100D;
+    display:flex; align-items:center; gap:12px; background:var(--console-bg);
     border:1px solid var(--line); border-radius:5px; padding:14px 18px;
     font-family:'IBM Plex Mono', monospace; font-size:13.5px; color:var(--paper);
     margin-bottom:22px;
