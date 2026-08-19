@@ -1,9 +1,14 @@
-// Clariona frontend — recommendation console (client-side)
+// Clariona frontend — recommendation console
 //
-// Runs entirely in the browser. Assets now come from
-// window.clarionaFetchAllAssets() (see chain-discovery.js) — i.e. REAL
-// minted assets read live from the contract, not a fixed demo list. Any
-// asset anyone mints becomes searchable here for every visitor.
+// Tries a real AI call (via the Cloudflare Worker in worker.js) first —
+// Claude reads the query and the live on-chain assets and returns a
+// ranked, reasoned match list. If that call fails or times out for any
+// reason, it falls back to the original local regex/filter matcher so
+// the console never goes blank.
+
+// TODO: replace with your deployed worker URL after running
+// `wrangler deploy` — see the deployment instructions.
+const AI_WORKER_URL = "https://clariona-ai-match.mandicrypt.workers.dev";
 
 let cachedAssets = null;
 
@@ -13,6 +18,43 @@ async function getAssets(forceRefresh = false) {
   return cachedAssets;
 }
 
+// ── AI matching (primary path) ─────────────────────────────────────────
+async function callAiMatch(query, assets) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000); // 12s timeout
+
+  try {
+    const res = await fetch(AI_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, assets }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error(`Worker returned ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data.results)) throw new Error("Malformed worker response");
+
+    // Map returned {id, reason} back onto full asset objects, preserving
+    // the AI's ranking order.
+    const byId = new Map(assets.map((a) => [a.id, a]));
+    const matched = data.results
+      .map((r) => {
+        const asset = byId.get(r.id);
+        if (!asset) return null;
+        return { ...asset, reason: r.reason };
+      })
+      .filter(Boolean);
+
+    return matched;
+  } catch (err) {
+    clearTimeout(timeout);
+    throw err;
+  }
+}
+
+// ── Local regex/filter matching (fallback path) ────────────────────────
 function parseQuery(query) {
   const q = query.toLowerCase();
   const filters = {};
@@ -48,47 +90,6 @@ function parseQuery(query) {
   if (/trade finance|invoice|receivable|export/.test(q)) filters.type = "Trade Finance";
 
   return filters;
-}
-
-// Tradeable tokenized stocks are a separate universe from minted RWAs —
-// they aren't scored by risk/yield/maturity, so they're matched by
-// keyword/ticker/company-name instead and rendered as their own cards.
-function parseStockMatches(query) {
-  const q = query.toLowerCase();
-  const meta = window.clarionaStockMeta || {};
-  const nameHints = { AAPL: ["apple", "aapl"], TSLA: ["tesla", "tsla"], NVDA: ["nvidia", "nvda"] };
-
-  const hit = Object.keys(meta).filter((symbol) =>
-    (nameHints[symbol] || []).some((hint) => q.includes(hint))
-  );
-  if (hit.length > 0) return hit;
-
-  if (/\b(stock|stocks|equity|equities|shares?)\b/.test(q)) {
-    return Object.keys(meta);
-  }
-  return [];
-}
-
-function renderStockResults(container, symbols) {
-  const stocksData = window.clarionaStocksData;
-  const meta = window.clarionaStockMeta || {};
-
-  symbols.forEach((symbol) => {
-    const asset = stocksData ? stocksData.assets.find((a) => a.symbol === symbol) : null;
-    const m = meta[symbol];
-    if (!m) return;
-
-    const card = document.createElement("div");
-    card.className = "result-card stock-result-card";
-    card.setAttribute("data-stock", symbol);
-    card.innerHTML = `
-      <span class="rc-badge">Tradeable Stock · OKX</span>
-      <div class="rc-top"><h4>${m.name}</h4><span class="rc-yield">$${asset ? asset.price.toFixed(2) : "—"}</span></div>
-      <p>${m.xTicker} · tokenized equity, price-linked to ${symbol}</p>
-      <p class="rc-reason">Not a minted Clariona asset — trades on OKX. Click to buy or sell.</p>
-    `;
-    container.appendChild(card);
-  });
 }
 
 function applyFilters(assets, f) {
@@ -147,6 +148,55 @@ function explainMatch(asset, filters, results, rank) {
   return sentence;
 }
 
+function localMatch(query, assets) {
+  const filters = parseQuery(query);
+  const ranked = applyFilters(assets, filters).sort((a, b) => b.yield_pct - a.yield_pct);
+  return ranked.map((asset, i) => ({
+    ...asset,
+    reason: explainMatch(asset, filters, ranked, i),
+  }));
+}
+
+// ── Tokenized stocks (unchanged — separate universe from minted RWAs) ──
+function parseStockMatches(query) {
+  const q = query.toLowerCase();
+  const meta = window.clarionaStockMeta || {};
+  const nameHints = { AAPL: ["apple", "aapl"], TSLA: ["tesla", "tsla"], NVDA: ["nvidia", "nvda"] };
+
+  const hit = Object.keys(meta).filter((symbol) =>
+    (nameHints[symbol] || []).some((hint) => q.includes(hint))
+  );
+  if (hit.length > 0) return hit;
+
+  if (/\b(stock|stocks|equity|equities|shares?)\b/.test(q)) {
+    return Object.keys(meta);
+  }
+  return [];
+}
+
+function renderStockResults(container, symbols) {
+  const stocksData = window.clarionaStocksData;
+  const meta = window.clarionaStockMeta || {};
+
+  symbols.forEach((symbol) => {
+    const asset = stocksData ? stocksData.assets.find((a) => a.symbol === symbol) : null;
+    const m = meta[symbol];
+    if (!m) return;
+
+    const card = document.createElement("div");
+    card.className = "result-card stock-result-card";
+    card.setAttribute("data-stock", symbol);
+    card.innerHTML = `
+      <span class="rc-badge">Tradeable Stock · OKX</span>
+      <div class="rc-top"><h4>${m.name}</h4><span class="rc-yield">$${asset ? asset.price.toFixed(2) : "—"}</span></div>
+      <p>${m.xTicker} · tokenized equity, price-linked to ${symbol}</p>
+      <p class="rc-reason">Not a minted Clariona asset — trades on OKX. Click to buy or sell.</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── Main entry point ─────────────────────────────────────────────────
 async function runRecommendation(query) {
   const status = document.getElementById("recommend-status");
   const container = document.getElementById("recommend-results");
@@ -169,19 +219,26 @@ async function runRecommendation(query) {
     return;
   }
 
-  const filters = parseQuery(query);
-  const ranked = applyFilters(assets, filters).sort((a, b) => b.yield_pct - a.yield_pct);
-  const results = ranked.map((asset, i) => ({
-    ...asset,
-    reason: explainMatch(asset, filters, ranked, i),
-  }));
+  status.textContent = "Asking Clariona...";
+
+  let results;
+  let usedAi = true;
+  try {
+    results = await callAiMatch(query, assets);
+  } catch (err) {
+    console.warn("AI match failed, falling back to local matcher:", err);
+    usedAi = false;
+    results = localMatch(query, assets);
+  }
 
   const stockMatches = parseStockMatches(query);
 
-  status.textContent = `Parsed with local matcher · ${assets.length} asset${assets.length === 1 ? "" : "s"} on-chain.`;
+  status.textContent = usedAi
+    ? `Matched by Clariona AI · ${assets.length} asset${assets.length === 1 ? "" : "s"} on-chain.`
+    : `Parsed with local matcher · ${assets.length} asset${assets.length === 1 ? "" : "s"} on-chain.`;
 
   if (results.length === 0 && stockMatches.length === 0) {
-    container.innerHTML = `<p style="color:var(--sage); font-family:'IBM Plex Mono', monospace; font-size:12.5px;">No matching assets found — try loosening your filters.</p>`;
+    container.innerHTML = `<p style="color:var(--sage); font-family:'IBM Plex Mono', monospace; font-size:12.5px;">No matching assets found — try rephrasing or loosening your filters.</p>`;
     return;
   }
 
@@ -208,21 +265,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
 
-  // Refresh from chain when the network toggle changes.
   window.addEventListener("clariona:networkChanged", () => {
     cachedAssets = null;
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
 
-  // Refresh immediately when any asset gets minted, so a fresh mint
-  // shows up in search results without needing a page reload.
   window.addEventListener("clariona:assetMinted", () => {
     cachedAssets = null;
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
 
-  // Stock prices load async (separate fetch) — re-run once available so
-  // tradeable-stock cards pick up a real price instead of showing "—".
   window.addEventListener("clariona:stocksLoaded", () => {
     if (input.value.trim()) runRecommendation(input.value.trim());
   });
