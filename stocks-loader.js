@@ -5,7 +5,7 @@
 
 async function loadStocksData() {
   try {
-    const res = await fetch("stocks-data.json");
+    const res = await fetch("/stocks-data.json");
     if (!res.ok) throw new Error(`Failed to load stocks-data.json (${res.status})`);
     const data = await res.json();
 

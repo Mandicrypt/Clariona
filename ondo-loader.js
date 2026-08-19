@@ -5,7 +5,7 @@
 
 async function loadOndoData() {
   try {
-    const res = await fetch("ondo-data.json");
+    const res = await fetch("/ondo-data.json");
     if (!res.ok) throw new Error(`Failed to load ondo-data.json (${res.status})`);
     const data = await res.json();
 
