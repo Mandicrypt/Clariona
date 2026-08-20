@@ -153,11 +153,27 @@ function updateNetworkToggleUI() {
   });
 }
 
+// --- Footer contract address display ---
+// Keeps the footer's contract address, network label, and explorer link
+// in sync with whichever network is currently toggled.
+function updateFooterContract() {
+  const network = NETWORKS[currentNetwork];
+  const nameEl = document.getElementById("footer-network-name");
+  const addrEl = document.getElementById("footer-contract-address");
+  const explorerEl = document.getElementById("footer-explorer-link");
+  if (!nameEl || !addrEl || !explorerEl) return;
+
+  nameEl.textContent = network.chainName;
+  addrEl.textContent = network.contractAddress;
+  explorerEl.href = `${network.blockExplorerUrls[0]}/address/${network.contractAddress}`;
+}
+
 async function setNetwork(network) {
   if (network === currentNetwork) return;
   currentNetwork = network;
   window.clarionaWallet.network = network;
   updateNetworkToggleUI();
+  updateFooterContract();
 
   // If already connected, switch the wallet over right away.
   if (window.clarionaWallet.connected && window.clarionaWallet.provider) {
@@ -208,6 +224,21 @@ function closeWalletPicker() {
 
 document.addEventListener("DOMContentLoaded", () => {
   requestWalletAnnouncements();
+  updateFooterContract();
+
+  document.getElementById("footer-copy-btn")?.addEventListener("click", async () => {
+    const addr = document.getElementById("footer-contract-address")?.textContent;
+    const btn = document.getElementById("footer-copy-btn");
+    if (!addr || !btn) return;
+    try {
+      await navigator.clipboard.writeText(addr);
+      const original = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  });
 
   document.querySelectorAll(".net-option").forEach((btn) => {
     btn.addEventListener("click", () => setNetwork(btn.dataset.network));
