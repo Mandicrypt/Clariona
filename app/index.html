@@ -588,9 +588,25 @@
   .cta-band p{ color:var(--sage); margin-bottom:34px; }
   footer{
     border-top:1px solid var(--line); padding:26px 32px; display:flex;
+    flex-wrap:wrap; gap:12px 24px;
     justify-content:space-between; align-items:center; max-width:1180px; margin:0 auto;
     font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--sage);
   }
+  .footer-contract{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+  }
+  .footer-contract #footer-contract-address{
+    color:var(--gold); background:rgba(255,255,255,0.04);
+    padding:2px 8px; border-radius:4px; letter-spacing:0.02em;
+  }
+  .footer-copy-btn{
+    background:transparent; border:1px solid var(--sage); color:var(--sage);
+    font-family:inherit; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;
+  }
+  .footer-copy-btn:hover{ border-color:var(--gold); color:var(--gold); }
+  .footer-explorer-link{ color:var(--sage); text-decoration:none; }
+  .footer-explorer-link:hover{ color:var(--gold); text-decoration:underline; }
 
   @media (max-width:860px){
     .hero{ grid-template-columns:1fr; padding-top:56px; }
@@ -1003,6 +1019,14 @@
 
 <footer>
   <span>Clariona · Build X AI Season</span>
+  <div class="footer-contract">
+    <span>Contract (<span id="footer-network-name">X Layer</span>):</span>
+    <code id="footer-contract-address">0xC19105eb061517D663075a3E040925BdD27B46c8</code>
+    <button id="footer-copy-btn" type="button" class="footer-copy-btn" aria-label="Copy contract address">Copy</button>
+    <a id="footer-explorer-link"
+       href="https://www.okx.com/web3/explorer/xlayer/address/0xC19105eb061517D663075a3E040925BdD27B46c8"
+       target="_blank" rel="noopener" class="footer-explorer-link">View on Explorer ↗</a>
+  </div>
   <div class="footer-social">
     <a href="https://x.com/clarionahq" target="_blank" rel="noopener" aria-label="X (Twitter)">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22H16.6l-5.2-6.8L5.4 22H2.2l8.1-9.3L1.3 2h6.9l4.7 6.2L18.9 2zm-1.2 18h1.7L6.4 4H4.6l13.1 16z"/></svg>
