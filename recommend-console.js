@@ -243,12 +243,16 @@ async function runRecommendation(query) {
   }
 
   results.forEach((asset) => {
+    const network = window.clarionaNetworks?.[window.clarionaWallet?.network || "mainnet"];
+    const explorerUrl = network ? `${network.blockExplorerUrls[0]}/address/${network.contractAddress}` : null;
+
     const card = document.createElement("div");
     card.className = "result-card";
     card.innerHTML = `
       <div class="rc-top"><h4>${asset.name}</h4><span class="rc-yield">${asset.yield_pct}%</span></div>
       <p>${asset.maturity_days}-day maturity · Risk ${asset.risk_score}/100 · ${asset.type}</p>
       <p class="rc-reason">${asset.reason}</p>
+      ${explorerUrl ? `<a class="rc-verify" href="${explorerUrl}" target="_blank" rel="noopener">Verify on-chain · Token #${asset.id} ↗</a>` : ""}
     `;
     container.appendChild(card);
   });
