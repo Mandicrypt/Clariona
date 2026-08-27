@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-27T13:51:15.206Z",
+  "fetchedAt": "2026-08-27T23:36:35.517Z",
   "source": "Ethereum mainnet (on-chain) + CoinGecko (price)",
   "assets": [
     {
@@ -10,7 +10,7 @@
       "symbol": "OUSG",
       "decimals": 18,
       "totalSupply": "1326531.365331324529408649",
-      "priceUsd": 116.36
+      "priceUsd": 116.37
     },
     {
       "key": "USDY",
@@ -19,7 +19,7 @@
       "name": "Ondo U.S. Dollar Yield",
       "symbol": "USDY",
       "decimals": 18,
-      "totalSupply": "1004607151.602185174033305519",
+      "totalSupply": "1004860868.644531800333761654",
       "priceUsd": 1.14
     }
   ]
