@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-08T21:34:36.223Z",
+  "fetchedAt": "2026-09-08T23:50:29.908Z",
   "source": "Ethereum mainnet (on-chain) + CoinGecko (price)",
   "assets": [
     {
@@ -10,7 +10,7 @@
       "symbol": "OUSG",
       "decimals": 18,
       "totalSupply": "1274303.434085227213030814",
-      "priceUsd": 116.46
+      "priceUsd": 116.5
     },
     {
       "key": "USDY",
