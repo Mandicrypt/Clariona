@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-19T14:10:51.817Z",
+  "fetchedAt": "2026-09-19T17:47:02.161Z",
   "source": "Ethereum mainnet (on-chain) + CoinGecko (price)",
   "assets": [
     {
@@ -20,7 +20,7 @@
       "symbol": "USDY",
       "decimals": 18,
       "totalSupply": "1032343856.227997425703907704",
-      "priceUsd": 1.14
+      "priceUsd": 1.15
     }
   ]
 }
