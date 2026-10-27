@@ -1,13 +1,13 @@
 {
-  "fetchedAt": "2026-10-26T20:15:03.966Z",
+  "fetchedAt": "2026-10-27T00:09:17.165Z",
   "source": "Finnhub (free tier)",
   "assets": [
     {
       "symbol": "AAPL",
       "name": "Apple Inc.",
-      "price": 344.015,
-      "change": -3.71,
-      "changePct": -1.0669,
+      "price": 343.91,
+      "change": -3.815,
+      "changePct": -1.0971,
       "high": 347.09,
       "low": 341.03,
       "open": 343.92,
@@ -27,9 +27,9 @@
     {
       "symbol": "NVDA",
       "name": "NVIDIA Corporation",
-      "price": 216.019,
-      "change": 5.059,
-      "changePct": 2.3981,
+      "price": 216,
+      "change": 5.04,
+      "changePct": 2.3891,
       "high": 217.75,
       "low": 212.61,
       "open": 213.105,
