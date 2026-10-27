@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-27T01:09:09.942Z",
+  "fetchedAt": "2026-10-27T07:19:22.214Z",
   "source": "Ethereum mainnet (on-chain) + CoinGecko (price)",
   "assets": [
     {
@@ -19,7 +19,7 @@
       "name": "Ondo U.S. Dollar Yield",
       "symbol": "USDY",
       "decimals": 18,
-      "totalSupply": "1106412439.119118155793639352",
+      "totalSupply": "1105102719.714196455649454027",
       "priceUsd": 1.15
     }
   ]
