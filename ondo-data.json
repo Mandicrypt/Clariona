@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-13T18:22:27.816Z",
+  "fetchedAt": "2026-11-14T00:10:17.655Z",
   "source": "Ethereum mainnet (on-chain) + CoinGecko (price)",
   "assets": [
     {
@@ -9,8 +9,8 @@
       "name": "Ondo Short-Term U.S. Government Bond Fund",
       "symbol": "OUSG",
       "decimals": 18,
-      "totalSupply": "1101034.005740974676450014",
-      "priceUsd": 117.24
+      "totalSupply": "1083956.005740974676450014",
+      "priceUsd": 117.25
     },
     {
       "key": "USDY",
@@ -19,7 +19,7 @@
       "name": "Ondo U.S. Dollar Yield",
       "symbol": "USDY",
       "decimals": 18,
-      "totalSupply": "1120713678.248039853810102193",
+      "totalSupply": "1120721405.448670734700182423",
       "priceUsd": 1.15
     }
   ]
