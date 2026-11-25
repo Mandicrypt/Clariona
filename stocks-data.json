@@ -1,38 +1,38 @@
 {
-  "fetchedAt": "2026-11-24T18:32:28.835Z",
+  "fetchedAt": "2026-11-25T02:53:13.454Z",
   "source": "Finnhub (free tier)",
   "assets": [
     {
       "symbol": "AAPL",
       "name": "Apple Inc.",
-      "price": 353.3,
-      "change": 4.22,
-      "changePct": 1.2089,
-      "high": 353.92,
+      "price": 354.07,
+      "change": 4.99,
+      "changePct": 1.4295,
+      "high": 354.4,
       "low": 345.88,
-      "open": 348.925,
+      "open": 348.06,
       "previousClose": 349.08
     },
     {
       "symbol": "TSLA",
       "name": "Tesla, Inc.",
-      "price": 383.54,
-      "change": -1.92,
-      "changePct": -0.4981,
+      "price": 384.68,
+      "change": -0.78,
+      "changePct": -0.2024,
       "high": 390.09,
       "low": 375.5,
-      "open": 384.3325,
+      "open": 383.765,
       "previousClose": 385.46
     },
     {
       "symbol": "NVDA",
       "name": "NVIDIA Corporation",
-      "price": 153.62,
-      "change": -11.43,
-      "changePct": -6.9252,
-      "high": 160.7,
+      "price": 155.38,
+      "change": -9.67,
+      "changePct": -5.8588,
+      "high": 159.92,
       "low": 150.5,
-      "open": 160.7,
+      "open": 159.1,
       "previousClose": 165.05
     }
   ]
